@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 import re
@@ -9,11 +10,20 @@ from local_qwen_reviewer import review_code
 # Initialize the API server
 app = FastAPI(title="Qwen Code Reviewer API")
 
+# --- THE CORS FIX ---
+# This allows your index.html file to talk to this server
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Allows any website to connect (good for local testing)
+    allow_credentials=True,
+    allow_methods=["*"], # Allows POST, GET, etc.
+    allow_headers=["*"],
+)
+# --------------------
 
 class CodePatch(BaseModel):
     code: str
     language: str = "Java"
-
 
 @app.post("/api/v1/review")
 async def analyze_code(patch: CodePatch):
