@@ -44,7 +44,7 @@ else:
     base_model = AutoModelForCausalLM.from_pretrained(
         base_model_name,
         device_map="cpu",
-        dtype=torch.float32
+        dtype=torch.float16
     )
     model = PeftModel.from_pretrained(base_model, adapter_path)
 
@@ -90,17 +90,4 @@ The exact corrected Java code goes here. Do not escape quotes.
 
     return review_text.strip()
 
-# ==========================================
-# 3. THE ULTIMATE TEST
-# ==========================================
-sample_spring_boot_patch = """
-+ public User getUser(Long id) {
-+     // Fetch user from database
-+     return userRepository.findById(id).get();
-+ }
-"""
-
-print("--- Sending Code to AI Reviewer ---")
-print(sample_spring_boot_patch)
-print("--- AI Reviewer Feedback ---")
-print(review_code(sample_spring_boot_patch))
+# Startup complete. Waiting for FastAPI to take over.
