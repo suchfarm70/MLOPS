@@ -30,7 +30,7 @@ FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/install/bin:$PATH" \
-    PYTHONPATH="/install/lib/python3.10/site-packages:$PYTHONPATH"
+    PYTHONPATH="/install/lib/python3.10/site-packages:/install/local/lib/python3.10/dist-packages:/install/lib/python3.10/dist-packages:/install/lib/python3/dist-packages:$PYTHONPATH"
 
 # Install ONLY the bare minimum Python runner
 RUN apt-get update && apt-get install -y \
