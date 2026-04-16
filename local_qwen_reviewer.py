@@ -7,7 +7,7 @@ from peft import PeftModel  # <--- NEW MLOPS IMPORT!
 # 1. DOWNLOAD & LOAD THE QWEN BRAIN (GPU OPTIMIZED)
 # ==========================================
 base_model_name = "Qwen/Qwen2.5-Coder-3B-Instruct"
-adapter_path = "./my-custom-qwen-java-reviewer"
+adapter_path = "./my-custom-qwen-java-reviewer/my-custom-qwen-java-reviewer"
 
 print(f"Loading Tokenizer from {adapter_path}...")
 tokenizer = AutoTokenizer.from_pretrained(adapter_path)
