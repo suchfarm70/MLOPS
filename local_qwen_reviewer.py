@@ -42,21 +42,20 @@ print(f"Model loaded successfully on {device}!\n")
 # 2. THE LOCAL REVIEW FUNCTION (STRICT JSON MODE)
 # ==========================================
 def review_code(patch_text, language="Java"):
-    # We turn the AI into a strict JSON-generating machine
+    # We switch to XML tags to completely bypass JSON escaping crashes
     system_prompt = f"""You are a strict, automated {language} code review API.
-You must output your review STRICTLY in valid JSON format.
-DO NOT include any conversational text, greetings, or explanations before or after the JSON.
-DO NOT use markdown code blocks like ```json. Just output the raw JSON object.
+Do NOT output JSON. You must output your review using these EXACT tags:
 
-Use this exact JSON schema:
-{{
-  "bug_found": boolean,
-  "severity": "CRITICAL" | "WARNING" | "PASS",
-  "issue": "One precise sentence describing the problem",
-  "fixed_code": "The exact corrected Java code"
-}}"""
+<bug_found>true or false</bug_found>
+<severity>CRITICAL or WARNING or PASS</severity>
+<issue>One precise sentence describing the problem</issue>
+<fixed_code>
+The exact corrected Java code goes here. Do not escape quotes.
+</fixed_code>"""
 
     user_prompt = f"Code to review:\n{patch_text}"
+
+    # ... (Keep the rest of the function exactly the same)
 
     messages = [
         {"role": "system", "content": system_prompt},
