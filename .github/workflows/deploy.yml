@@ -28,3 +28,10 @@ jobs:
             # Restart Application using modern Docker Compose
             sudo docker compose down
             sudo docker compose up -d --build
+            
+            echo "Sleeping for 20 seconds to allow the python server to boot..."
+            sleep 20
+            echo "======================================"
+            echo "         CRASH DIAGNOSTIC LOGS        "
+            echo "======================================"
+            sudo docker logs mlops-reviewer
