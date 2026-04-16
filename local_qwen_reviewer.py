@@ -1,43 +1,54 @@
+
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from peft import PeftModel  # <--- NEW MLOPS IMPORT!
 
 # ==========================================
 # 1. DOWNLOAD & LOAD THE QWEN BRAIN (GPU OPTIMIZED)
 # ==========================================
-model_name = "Qwen/Qwen2.5-Coder-3B-Instruct"
+base_model_name = "Qwen/Qwen2.5-Coder-3B-Instruct"
+adapter_path = "./my-custom-qwen-java-reviewer"
 
-print(f"Loading {model_name}...")
-
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+print(f"Loading Tokenizer from {adapter_path}...")
+tokenizer = AutoTokenizer.from_pretrained(adapter_path)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 if device == "cuda":
     print("Nvidia GPU detected! Squeezing into 4-bit mode for 4GB VRAM...")
 
-    # The ultimate 4-bit compression setup
     quantization_config = BitsAndBytesConfig(
         load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16, # Keeps the math fast
-        bnb_4bit_use_double_quant=True,       # Squeezes it even smaller
-        bnb_4bit_quant_type="nf4"             # Preserves AI intelligence
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4"
     )
 
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
+    # Step A: Load the heavy Base Model
+    print("Loading Base Model...")
+    base_model = AutoModelForCausalLM.from_pretrained(
+        base_model_name,
         device_map="auto",
         quantization_config=quantization_config
     )
+
+    # Step B: Snap your custom trained Adapter on top!
+    print("Attaching Custom LoRA Brain...")
+    model = PeftModel.from_pretrained(
+        base_model,
+        adapter_path,
+        autocast_adapter_dtype=False  # <--- THE MAGIC BYPASS
+    )
 else:
-    print("GPU not found. Falling back to CPU (This will be slow)...")
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
+    print("GPU not found. Falling back to CPU...")
+    base_model = AutoModelForCausalLM.from_pretrained(
+        base_model_name,
         device_map="cpu",
         dtype=torch.float32
     )
+    model = PeftModel.from_pretrained(base_model, adapter_path)
 
-print(f"Model loaded successfully on {device}!\n")
-
+print(f"Custom Model successfully assembled and loaded on {device}!\n")
 # ==========================================
 # 2. THE LOCAL REVIEW FUNCTION (STRICT JSON MODE)
 # ==========================================
