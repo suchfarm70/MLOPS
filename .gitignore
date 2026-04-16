@@ -1,0 +1,19 @@
+# IDEs
+.idea/
+.vscode/
+
+# Python caching
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Model weights (Just in case you add them later!)
+my-custom-qwen-java-reviewer/
+checkpoint-*/
+*.bin
+*.pt
+*.safetensors

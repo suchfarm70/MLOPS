@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  reviewer-app:
+    build: .
+    container_name: mlops-reviewer
+    ports:
+      - "80:8000"   # Maps standard web port 80 to container's 8000
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
