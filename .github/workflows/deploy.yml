@@ -21,7 +21,8 @@ jobs:
             fi
             
             cd MLOPS-master
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
             
             # Restart Application using modern Docker Compose
             sudo docker compose down
